@@ -1,9 +1,11 @@
 package com.example.week4_louis_05.model
 
+import androidx.annotation.DrawableRes
+
 data class Feed (
     val name: String,
-    val nameProfilePicture: String,
-    val namaImage: String,
+    @DrawableRes val nameProfilePicture: Int,
+    @DrawableRes val namaImage: Int,
     val isLiked: Boolean,
     val isSaved: Boolean,
     val likes: Int,
