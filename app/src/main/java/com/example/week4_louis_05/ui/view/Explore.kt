@@ -46,7 +46,7 @@ fun ExploreView(imageList: List<Explore>) {
         modifier = Modifier
             .padding(bottom = 0.dp)
             .background(Color.Black)
-                    .height(700.dp)
+            .height(700.dp)
     ) {
         item(
             span = { GridItemSpan(3) }
