@@ -416,7 +416,7 @@ fun Feed(feed: Feed, context: Context) {
                     contentDescription = "Like",
                     modifier = Modifier
                         .clickable {
-                            Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
                         }
                 )
                 Spacer(modifier = Modifier.width(16.dp))

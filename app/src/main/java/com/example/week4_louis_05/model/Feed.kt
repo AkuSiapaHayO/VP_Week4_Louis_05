@@ -8,7 +8,7 @@ data class Feed (
     val name: String,
     val nameProfilePicture: String,
     val namaImage: String,
-    val isLiked: Boolean,
+    var isLiked: Boolean,
     val isSaved: Boolean,
     val likes: Int,
     val caption: String,
