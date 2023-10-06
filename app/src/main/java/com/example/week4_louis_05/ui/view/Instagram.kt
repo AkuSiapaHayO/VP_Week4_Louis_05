@@ -84,15 +84,16 @@ fun InstagramView(listFeed: List<Feed>) {
         item {
             LazyRowStory(DataSource().loadStory())
         }
-        var count = 1
+        var count = 5
         for (feed in listFeed) {
-            if (count == 2 || count % 6 == 0) {
+            if (count == 6) {
                 item {
                     LazyRowSuggestion(DataSource().loadSuggestion())
                 }
                 item {
                     Feed(feed = feed, context = context)
                 }
+                count = 0
             } else {
                 item {
                     Feed(feed = feed, context = context)
