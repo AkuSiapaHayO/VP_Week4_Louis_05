@@ -1,5 +1,6 @@
 package com.example.week4_louis_05.ui.view
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -90,11 +91,11 @@ fun InstagramView(listFeed: List<Feed>) {
                     LazyRowSuggestion(DataSource().loadSuggestion())
                 }
                 item {
-                    Feed(feed = feed)
+                    Feed(feed = feed, context = context)
                 }
             } else {
                 item {
-                    Feed(feed = feed)
+                    Feed(feed = feed, context = context)
                 }
             }
             count++
@@ -194,33 +195,32 @@ fun Header() {
 
 @Composable
 fun LazyRowStory(storyList: List<Story>) {
+    val context = LocalContext.current
     LazyRow(
         modifier = Modifier
             .padding(start = 6.dp)
     ) {
         items(storyList) {
-            Story(it)
+            Story(it, context)
         }
     }
 }
 
 @Composable
 fun LazyRowSuggestion(suggestionList: List<Suggestion>) {
+    val context = LocalContext.current
     LazyRow(
         modifier = Modifier
             .padding(start = 10.dp)
     ) {
         items(suggestionList) {
-            Suggestion(it)
+            Suggestion(it, context)
         }
     }
 }
 
 @Composable
-fun Story(story: Story) {
-
-    val context = LocalContext.current
-
+fun Story(story: Story, context: Context) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -228,7 +228,7 @@ fun Story(story: Story) {
     ) {
         Box {
             Image(
-                painter = painterResource(id = story.nameProfilePicture),
+                painter = painterResource(id = story.getImageIDbyString(context = context)),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 7.dp)
@@ -260,12 +260,11 @@ fun Story(story: Story) {
 }
 
 @Composable
-fun Suggestion(suggestion: Suggestion) {
+fun Suggestion(suggestion: Suggestion, context: Context) {
     Card (
         colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0f)
+            containerColor = Color(0xFF191919)
         ),
-        border = BorderStroke(1.dp, Color(0xFF969696)),
         modifier = Modifier
             .padding(horizontal = 6.dp)
     ){
@@ -276,7 +275,7 @@ fun Suggestion(suggestion: Suggestion) {
         ){
             Box {
                 Image(
-                    painter = painterResource(id = suggestion.nameProfilePicture),
+                    painter = painterResource(id = suggestion.getImageIDbyString(context = context)),
                     contentDescription = "Profile Picture",
                     Modifier
                         .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 12.dp)
@@ -337,10 +336,9 @@ fun formatDate(dateString: String): String {
 }
 
 @Composable
-fun Feed(feed: Feed) {
+fun Feed(feed: Feed, context: Context) {
     var likeFormatted: String
     val likeFormat = NumberFormat.getNumberInstance(Locale.US)
-    val context = LocalContext.current
     var expand by rememberSaveable { mutableStateOf(false) }
     val caption = buildAnnotatedString {
         withStyle(
@@ -367,7 +365,7 @@ fun Feed(feed: Feed) {
             ) {
                 Image(
                     painter = painterResource(
-                        id = feed.nameProfilePicture
+                        id = feed.getImageIDbyString(context = context)
                     ),
                     contentDescription = "Profile Picture",
                     modifier = Modifier
@@ -391,7 +389,7 @@ fun Feed(feed: Feed) {
             )
         }
         Image(
-            painter = painterResource(id = feed.namaImage),
+            painter = painterResource(id = feed.getImageIDbyString(context = context)),
             contentDescription = "Content",
             modifier = Modifier
                 .fillMaxWidth(),
@@ -415,7 +413,7 @@ fun Feed(feed: Feed) {
                             Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show()
                         }
                 )
-                Spacer(modifier = Modifier.width(28.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 Image(
                     painter = painterResource(id = R.drawable.comment),
                     contentDescription = "Comment",
@@ -424,7 +422,7 @@ fun Feed(feed: Feed) {
                             Toast.makeText(context, "Comment", Toast.LENGTH_SHORT).show()
                         }
                 )
-                Spacer(modifier = Modifier.width(28.dp))
+                Spacer(modifier = Modifier.width(16.dp))
                 Image(
                     painter = painterResource(id = R.drawable.messanger),
                     contentDescription = "Messenger",
