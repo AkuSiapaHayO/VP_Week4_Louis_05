@@ -406,7 +406,12 @@ fun Feed(feed: Feed, context: Context) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.like),
+                    painter = painterResource(id = if (feed.isLiked){
+                        R.drawable.liked
+                    } else {
+                        R.drawable.like
+                    }
+                    ),
                     contentDescription = "Like",
                     modifier = Modifier
                         .clickable {
@@ -433,7 +438,12 @@ fun Feed(feed: Feed, context: Context) {
                 )
             }
             Image(
-                painter = painterResource(id = R.drawable.save),
+                painter = painterResource(id = if (feed.isSaved){
+                    R.drawable.save
+                } else {
+                    R.drawable.saved_light
+                }
+                ),
                 contentDescription = "Save",
                 modifier = Modifier
                     .clickable {
