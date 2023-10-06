@@ -1,6 +1,7 @@
 package com.example.week4_louis_05.ui.view
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,11 +18,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -67,7 +71,8 @@ fun InstagramView(listFeed: List<Feed>) {
 
     val context = LocalContext.current
 
-    LazyColumn(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(1),
         modifier = Modifier
             .height(700.dp)
             .background(Color(0xFF0E0E0E))
@@ -78,8 +83,21 @@ fun InstagramView(listFeed: List<Feed>) {
         item {
             LazyRowStory(DataSource().loadStory())
         }
-        items(listFeed) {
-            Feed(it)
+        var count = 1
+        for (feed in listFeed) {
+            if (count == 2 || count % 6 == 0) {
+                item {
+                    LazyRowSuggestion(DataSource().loadSuggestion())
+                }
+                item {
+                    Feed(feed = feed)
+                }
+            } else {
+                item {
+                    Feed(feed = feed)
+                }
+            }
+            count++
         }
     }
     Box(
@@ -188,7 +206,10 @@ fun LazyRowStory(storyList: List<Story>) {
 
 @Composable
 fun LazyRowSuggestion(suggestionList: List<Suggestion>) {
-    LazyRow() {
+    LazyRow(
+        modifier = Modifier
+            .padding(start = 10.dp)
+    ) {
         items(suggestionList) {
             Suggestion(it)
         }
@@ -240,24 +261,79 @@ fun Story(story: Story) {
 
 @Composable
 fun Suggestion(suggestion: Suggestion) {
-    Card {
-        Column {
+    Card (
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0f)
+        ),
+        border = BorderStroke(1.dp, Color(0xFF969696)),
+        modifier = Modifier
+            .padding(horizontal = 6.dp)
+    ){
+        Column (
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
             Box {
                 Image(
                     painter = painterResource(id = suggestion.nameProfilePicture),
-                    contentDescription = "Profile Picture"
+                    contentDescription = "Profile Picture",
+                    Modifier
+                        .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 12.dp)
+                        .size(120.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_close_24),
+                    contentDescription = "Close Icon",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(20.dp)
+                        .align(Alignment.TopEnd)
                 )
             }
+            Text(
+                text = suggestion.name,
+                color = Color(0xFFEFEFEF),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Follow",
+                color = Color(0xFFEFEFEF),
+                modifier = Modifier
+                    .background(Color(0xFF0B98EB), RoundedCornerShape(16.dp))
+                    .padding(vertical = 10.dp, horizontal = 32.dp),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
-fun formatDate(dateString: String) {
-    val inputDate = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+@Composable
+fun formatDate(dateString: String): String {
+    val inputDate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     val sameYearDate = SimpleDateFormat("MMMM dd", Locale.US)
     val diffYearDate = SimpleDateFormat("MMMM dd, yyyy", Locale.US)
     val date = inputDate.parse(dateString)
-//    val dateFormatted =
+    var dateFormatted by remember { mutableStateOf("") }
+
+    if (date != null) {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        dateFormatted = if (Calendar.getInstance().get(Calendar.YEAR) == calendar.get(Calendar.YEAR)) {
+            sameYearDate.format(date)
+        } else {
+            diffYearDate.format(date)
+        }
+    } else {
+        dateFormatted = dateString
+    }
+    return dateFormatted
 }
 
 @Composable
@@ -324,7 +400,7 @@ fun Feed(feed: Feed) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 18.dp),
+                .padding(start = 18.dp, end = 18.dp, bottom = 12.dp, top = 16.dp),
             Arrangement.SpaceBetween,
             Alignment.CenterVertically
         ) {
@@ -407,7 +483,6 @@ fun Feed(feed: Feed) {
                         fontSize = 13.sp,
                     )
                 }
-
             } else {
                 Text(
                     text = caption,
@@ -419,23 +494,9 @@ fun Feed(feed: Feed) {
                 )
             }
         }
-//        if (date != null) {
-//            calender.time = date
-//        }
-//        if (Calendar.getInstance().get(Calendar.YEAR) == calender.get(Calendar.YEAR)) {
-//            if (date != null) {
-//                sameYearDate.format(date)
-//            }
-//        } else {
-//            if (date != null) {
-//                diffYearDate.format(date)
-//            }
-//        }
-//        if (date != null) {
-//            formattedDate = date.toString()
-//        }
+
         Text(
-            text = feed.date,
+            text = formatDate(feed.date),
             color = Color(0xFF626166),
             fontSize = 11.sp,
             modifier = Modifier
