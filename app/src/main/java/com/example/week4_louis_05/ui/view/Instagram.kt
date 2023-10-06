@@ -252,15 +252,16 @@ fun Suggestion(suggestion: Suggestion) {
     }
 }
 
-@Composable
-fun Feed(feed: Feed) {
-
-    val calender = Calendar.getInstance()
+fun formatDate(dateString: String) {
     val inputDate = SimpleDateFormat("dd/MM/yyyy", Locale.US)
     val sameYearDate = SimpleDateFormat("MMMM dd", Locale.US)
     val diffYearDate = SimpleDateFormat("MMMM dd, yyyy", Locale.US)
-//    var date = inputDate.parse(feed.date)
-    var formattedDate by remember { mutableStateOf("") }
+    val date = inputDate.parse(dateString)
+//    val dateFormatted =
+}
+
+@Composable
+fun Feed(feed: Feed) {
     var likeFormatted: String
     val likeFormat = NumberFormat.getNumberInstance(Locale.US)
     val context = LocalContext.current
